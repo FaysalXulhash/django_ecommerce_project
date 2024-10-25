@@ -6,3 +6,4 @@ from .models import Product
 class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('product_name',)}
     list_display = ['id', 'product_name', 'slug', 'price', 'stock', 'is_available', 'category']
+    list_display_links = ['id', 'product_name', 'slug', 'price', 'stock', 'is_available', 'category']
