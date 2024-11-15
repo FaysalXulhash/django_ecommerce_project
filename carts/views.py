@@ -125,3 +125,28 @@ def cart(request, total=0, quantity=0, cart_items=None):
         'vat': vat,
     }
     return render(request, 'store/cart.html', context)
+
+def checkout(request, total=0, quantity=0, cart_items=None):
+    try:
+        vat = 0
+        grand_total = 0
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        for cart_item in cart_items:
+            total += (cart_item.product.price * cart_item.quantity)
+            cart_item.total_price = cart_item.product.price * cart_item.quantity
+            quantity += cart_item.quantity
+        vat = (2 * total) / 100
+        grand_total = vat + total
+    except ObjectDoesNotExist:
+        pass
+
+    context = {
+        'cart_items': cart_items,
+        'total': total,
+        # 'total': cart_item.total_price,
+        'quantity': quantity,
+        'grand_total': grand_total,
+        'vat': vat,
+    }
+    return render(request, 'store/checkout.html', context)
